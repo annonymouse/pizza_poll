@@ -43,7 +43,6 @@ function matcher(name, attribs, cb){
 
 function poll_pizza(id, current, end, timeout){
     current = typeof current !== 'undefined' ? current : "Nothing"; 
-    console.log(current);
     URL = linksFromID(id);
     req = http.get(URL.scrape,
             function(res){
@@ -76,7 +75,7 @@ function poll_pizza(id, current, end, timeout){
                         },
                         onend:
                         function(){
-                            console.log("Current:" + current + " End:" + end);
+                            console.log(current + "->" + end);
                             if (current !== end){
                                 // Recurse on end.  We need the context to
                                 // match.
@@ -91,7 +90,6 @@ function poll_pizza(id, current, end, timeout){
             });
 }
 
-//get_and_parse(delivery_id);
 delivery_id = process.argv[2];
 
 poll_pizza(delivery_id, "start", "Delivered", 5000);
