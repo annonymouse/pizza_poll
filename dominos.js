@@ -68,7 +68,10 @@ function poll_pizza(id, current, end, timeout){
                                             title: "🍕 Pizza 🍕",
                                             sender: "Pizza.js",
                                             open: URL.link,
-                                            message: note});
+                                            message: note,
+                                            // Specify group so we don't have to
+                                            // keep rewriting the notification
+                                            group: "pizza:"+id});
                                         current = note;
                                     }
                                 });
@@ -90,7 +93,19 @@ function poll_pizza(id, current, end, timeout){
             });
 }
 
-delivery_id = process.argv[2];
+//delivery_id = process.argv[2];
 
-poll_pizza(delivery_id, "start", "Delivered", 5000);
+//poll_pizza(delivery_id, "start", "Delivered", 5000);
+
+function dominos_on(data){
+    poll_pizza(data["ID"], "start", "Delivered", 5000);
+    data[pizza_state[4]]();
+    return true;
+}
+pizza_state = ["Ordered", "Preparing", "Baking", "QC", "Delivered"],
+
+module.exports = {
+    on: dominos_on,
+    states: pizza_state,
+}
 
