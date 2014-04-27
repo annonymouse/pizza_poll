@@ -40,58 +40,62 @@ function matcher(name, attribs, cb) {
     }
 }
 
+/*jslint unparam: true*/
 function poll_pizza(id, current, end, timeout) {
-    current = typeof current !== 'undefined' ? current : "Nothing";
-    var URL = linksFromID(id),
-        req = http.get(URL.scrape,
-            function (res) {
-                console.log(URL);
-                var page = "";
-                res.on('data',
-                    function (chunk) {
-                        page = page + chunk;
-                    });
-                res.on('end', function () {
-                    // We got the page, parse the html output for particular
-                    // styles to indicate what stage of delivery we're in.
-                    var notifier = new Notify(),
-                        parser = new htmlparser.Parser({
-                            onopentag:
-                                function (name, attribs) {
-                                    matcher(name, attribs,
-                                        function (note, state) {
-                                            if (note !== current) {
-                                                console.log("Pizza:", note, " ", URL.link);
-                                                notifier.notify({
-                                                    // Pizza Emojii
-                                                    title: "🍕 Pizza 🍕",
-                                                    sender: "Pizza.js",
-                                                    open: URL.link,
-                                                    message: note,
-                                                    // Specify group so we don't have to
-                                                    // keep rewriting the notification
-                                                    group: "pizza:" + id
-                                                });
-                                                current = note;
-                                            }
-                                        });
-                                },
-                            onend:
-                                function () {
-                                    console.log(current + "->" + end);
-                                    if (current !== end) {
-                                        // Recurse on end.  We need the context to
-                                        // match.
-                                        setTimeout(poll_pizza, timeout,
-                                                id, current, end, timeout);
-                                    }
-                                }
-                        });
-                    parser.write(page);
-                    parser.end();
+    current = current !== undefined ? current : "Nothing";
+
+    var URL = linksFromID(id);
+    http.get(URL.scrape,
+        function (res) {
+            console.log(URL);
+            var page = "";
+            res.on('data',
+                function (chunk) {
+                    page = page + chunk;
                 });
+            res.on('end', function () {
+                // We got the page, parse the html output for particular
+                // styles to indicate what stage of delivery we're in.
+                var notifier = new Notify(),
+                    parser = new htmlparser.Parser({
+                        onopentag:
+                            function (name, attribs) {
+                                matcher(name, attribs,
+                                    function (note, state) {
+                                        if (note !== current) {
+                                            console.log("Pizza:", note, " ", URL.link);
+                                            notifier.notify({
+                                                // Pizza Emojii
+                                                title: "🍕 Pizza 🍕",
+                                                sender: "Pizza.js",
+                                                open: URL.link,
+                                                message: note,
+                                                // Specify group so we don't have to
+                                                // keep rewriting the notification
+                                                group: "pizza:" + id
+                                            });
+                                            current = note;
+                                        }
+
+                                    });
+                            },
+                        onend:
+                            function () {
+                                console.log(current + "->" + end);
+                                if (current !== end) {
+                                    // Recurse on end.  We need the context to
+                                    // match.
+                                    setTimeout(poll_pizza, timeout,
+                                            id, current, end, timeout);
+                                }
+                            }
+                    });
+                parser.write(page);
+                parser.end();
             });
+        });
 }
+/*jslint unparam: false*/
 
 //delivery_id = process.argv[2];
 
