@@ -1,0 +1,30 @@
+{
+  "name": "dominos-pizza-tracker",
+  "version": "0.0.0",
+  "description": "Gives events based on the UK dominos pizza tracker to notification centre",
+  "main": "dominos.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "htmlparser2": "~3.7.1",
+    "node-notifier": "~2.0.4"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-jslint": "^1.1.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/annonymouse/pizza_poll.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/annonymouse/pizza_poll/issues"
+  },
+  "homepage": "https://github.com/annonymouse/pizza_poll"
+}
